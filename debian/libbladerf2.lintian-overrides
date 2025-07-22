@@ -1,0 +1,6 @@
+# begin-remove-after: released:forky
+# protective diversion for upgrades of files moved from / to /usr
+libbladerf2: diversion-for-unknown-file lib/udev/rules.d/88-nuand-bladerf1.rules [preinst:*]
+libbladerf2: diversion-for-unknown-file lib/udev/rules.d/88-nuand-bladerf2.rules [preinst:*]
+libbladerf2: diversion-for-unknown-file lib/udev/rules.d/88-nuand-bootloader.rules [preinst:*]
+# end-remove-after

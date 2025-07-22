@@ -1,0 +1,171 @@
+From 1034fe0d41b78ea0a92fede2b5d4f76f5850b454 Mon Sep 17 00:00:00 2001
+From: Ryan Thompson <ryanrthompson10@gmail.com>
+Date: Fri, 5 Jan 2024 09:52:18 -0600
+Subject: [PATCH 1/9] test: added FPGA load test
+
+---
+ host/libraries/libbladeRF_test/CMakeLists.txt |   1 +
+ .../test_fpga_load/CMakeLists.txt             |  12 ++
+ .../libbladeRF_test/test_fpga_load/src/main.c | 119 ++++++++++++++++++
+ 3 files changed, 132 insertions(+)
+ create mode 100644 host/libraries/libbladeRF_test/test_fpga_load/CMakeLists.txt
+ create mode 100644 host/libraries/libbladeRF_test/test_fpga_load/src/main.c
+
+diff --git a/host/libraries/libbladeRF_test/CMakeLists.txt b/host/libraries/libbladeRF_test/CMakeLists.txt
+index a1419a14..bd75e4aa 100644
+--- a/host/libraries/libbladeRF_test/CMakeLists.txt
++++ b/host/libraries/libbladeRF_test/CMakeLists.txt
+@@ -24,6 +24,7 @@ add_subdirectory(test_version)
+ add_subdirectory(test_digital_loopback)
+ add_subdirectory(test_interleaver)
+ add_subdirectory(test_rx_meta)
++add_subdirectory(test_fpga_load)
+ 
+ option(TEST_REGRESSION "Include regression tests" OFF)
+ if(TEST_REGRESSION)
+diff --git a/host/libraries/libbladeRF_test/test_fpga_load/CMakeLists.txt b/host/libraries/libbladeRF_test/test_fpga_load/CMakeLists.txt
+new file mode 100644
+index 00000000..bcb26fda
+--- /dev/null
++++ b/host/libraries/libbladeRF_test/test_fpga_load/CMakeLists.txt
+@@ -0,0 +1,12 @@
++cmake_minimum_required(VERSION 3.5)
++project(libbladeRF_test_fpga_load C)
++
++set(INCLUDES ${libbladeRF_SOURCE_DIR}/include)
++if(MSVC)
++    set(INCLUDES ${INCLUDES} ${MSVC_C99_INCLUDES})
++endif()
++
++include_directories(${INCLUDES} ${CURL_INCLUDE_DIR} include)
++add_executable(${PROJECT_NAME} src/main.c)
++
++target_link_libraries(${PROJECT_NAME} libbladerf_shared)
+diff --git a/host/libraries/libbladeRF_test/test_fpga_load/src/main.c b/host/libraries/libbladeRF_test/test_fpga_load/src/main.c
+new file mode 100644
+index 00000000..25450bea
+--- /dev/null
++++ b/host/libraries/libbladeRF_test/test_fpga_load/src/main.c
+@@ -0,0 +1,119 @@
++/*
++ * This file is part of the bladeRF project:
++ *   http://www.github.com/nuand/bladeRF
++ *
++ * Copyright (C) 2024 Nuand LLC
++ *
++ * Permission is hereby granted, free of charge, to any person obtaining a copy
++ * of this software and associated documentation files (the "Software"), to deal
++ * in the Software without restriction, including without limitation the rights
++ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
++ * copies of the Software, and to permit persons to whom the Software is
++ * furnished to do so, subject to the following conditions:
++ *
++ * The above copyright notice and this permission notice shall be included in
++ * all copies or substantial portions of the Software.
++ *
++ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
++ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
++ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
++ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
++ * THE SOFTWARE.
++ *
++ * This program is intended to verify that C programs build against
++ * libbladeRF without any unintended dependencies.
++ */
++#include <stdio.h>
++#include <stdlib.h>
++#include <getopt.h>
++#include <libbladeRF.h>
++
++#define CHECK_STATUS(fn) \
++    do { \
++        status = (fn); \
++        if (status != 0) { \
++            fprintf(stderr, "Error at %s:%d (%s): Status %d\n", __FILE__, __LINE__, __func__, status); \
++            goto error; \
++        } \
++    } while (0)
++
++int main(int argc, char *argv[])
++{
++    int status;
++    struct bladerf *dev = NULL;
++    const char *fpga_file = "latest.rbf";
++    const char *device_string = NULL;
++    int c;
++
++    bladerf_log_set_verbosity(BLADERF_LOG_LEVEL_ERROR);
++
++    while (1) {
++        int option_index = 0;
++        static struct option long_options[] = {
++            {"device",      required_argument   , 0, 'd'},
++            {"fpga",        required_argument   , 0, 'f'},
++            {"verbosity",   no_argument         , 0, 'v'},
++            {0, 0, 0, 0 }
++        };
++
++        c = getopt_long(argc, argv, "d:f:v", long_options, &option_index);
++        if (c == -1)
++            break;
++
++        switch (c) {
++            case 'd':
++                device_string = optarg;
++                printf("Using device: %s\n", optarg);
++                break;
++
++            case 'f':
++                fpga_file = optarg;
++                printf("Using FPGA file: %s\n", fpga_file);
++                break;
++
++            case 'v':
++                printf("Setting verbosity to verbose\n");
++                bladerf_log_set_verbosity(BLADERF_LOG_LEVEL_VERBOSE);
++                break;
++
++            case '?':
++                // getopt_long already printed an error message.
++                exit(EXIT_FAILURE);
++
++            default:
++                printf("?? getopt returned character code 0%o ??\n", c);
++        }
++    }
++
++    if (device_string == NULL) {
++        fprintf(stderr, "No device specified.\n");
++        exit(EXIT_FAILURE);
++    }
++
++    printf("Opening device...\n");
++    CHECK_STATUS(bladerf_open(&dev, device_string));
++
++    printf("Loading FPGA image...\n");
++    CHECK_STATUS(bladerf_load_fpga(dev, fpga_file));
++
++    printf("Setting sample rate to 10e6...\n");
++    CHECK_STATUS(bladerf_set_sample_rate(dev, BLADERF_MODULE_RX, 10e6, NULL));
++
++    printf("Reloading the FPGA image...\n");
++    CHECK_STATUS(bladerf_load_fpga(dev, fpga_file));
++
++    printf("Setting tuning mode to FPGA...\n");
++    CHECK_STATUS(bladerf_set_tuning_mode(dev, BLADERF_TUNING_MODE_FPGA));
++
++    printf("Setting sample rate again to 10e6...\n");
++    CHECK_STATUS(bladerf_set_sample_rate(dev, BLADERF_MODULE_RX, 10e6, NULL));
++
++    printf("Passed!\n");
++error:
++    if (dev) {
++        bladerf_close(dev);
++    }
++    return status;
++}
+-- 
+2.39.2
+

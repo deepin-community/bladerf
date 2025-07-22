@@ -1,0 +1,198 @@
+From: A. Maitland Bottoms <bottoms@debian.org>
+Date: Tue, 26 Apr 2016 19:24:11 -0400
+Subject: spelling
+
+---
+ auxillary -> auxiliary
+ comparitor -> comparator
+ paramter -> parameter
+ suppored -> supported
+ tranfers -> transfers
+ paremeter -> parameter
+ evironment -> environment
+ assignements -> assignments
+ unkown -> unknown
+
+--- a/host/libraries/libbladeRF/src/backend/usb/libusb.c
++++ b/host/libraries/libbladeRF/src/backend/usb/libusb.c
+@@ -861,7 +861,7 @@
+         *device_speed = BLADERF_DEVICE_SPEED_UNKNOWN;
+ 
+         if (speed == LIBUSB_SPEED_FULL) {
+-            log_debug("Full speed connection is not suppored.\n");
++            log_debug("Full speed connection is not supported.\n");
+             status = BLADERF_ERR_UNSUPPORTED;
+         } else if (speed == LIBUSB_SPEED_LOW) {
+             log_debug("Low speed connection is not supported.\n");
+@@ -1271,7 +1271,7 @@
+         malloc(num_transfers * sizeof(struct libusb_transfer *));
+ 
+     if (stream_data->transfers == NULL) {
+-        log_error("Failed to allocate libusb tranfers\n");
++        log_error("Failed to allocate libusb transfers\n");
+         status = BLADERF_ERR_MEM;
+         goto error;
+     }
+--- a/host/utilities/bladeRF-cli/src/cmd/doc/interactive-help.md
++++ b/host/utilities/bladeRF-cli/src/cmd/doc/interactive-help.md
+@@ -433,10 +433,10 @@
+   - `<pa|lna|aux> [on|off]`
+ 
+     Enable or disable the power amplifier (PA), low-noise amplifier (lna) or
+-    auxillary LNA (aux). The current state if the specified device is printed
++    auxiliary LNA (aux). The current state if the specified device is printed
+     if [on|off] is not specified.
+ 
+-    Note: The auxillary path on the XB-300 is not populated with components by
++    Note: The auxiliary path on the XB-300 is not populated with components by
+           default; the `aux` control will have no effect upon the RX signal.
+           This option is available for users to modify their board with custom
+           hardware.
+@@ -867,7 +867,7 @@
+ 
+ 6.   Re-configure the master and slaves to clear fire requests and re-arm.
+ 
+-        Steps 1 through 5 may be repeated as neccessary.
++        Steps 1 through 5 may be repeated as necessary.
+ 
+ 7.   Disable triggering on all slaves
+ 
+--- a/host/utilities/bladeRF-cli/src/cmd/doc/cmd_help.man.in
++++ b/host/utilities/bladeRF-cli/src/cmd/doc/cmd_help.man.in
+@@ -488,11 +488,11 @@
+ .RS 2
+ .PP
+ Enable or disable the power amplifier (PA), low\-noise amplifier (lna)
+-or auxillary LNA (aux).
++or auxiliary LNA (aux).
+ The current state if the specified device is printed if [on|off] is not
+ specified.
+ .PP
+-Note: The auxillary path on the XB\-300 is not populated with components
++Note: The auxiliary path on the XB\-300 is not populated with components
+ by default; the \f[C]aux\f[] control will have no effect upon the RX
+ signal.
+ This option is available for users to modify their board with custom
+@@ -1200,7 +1200,7 @@
+ .IP
+ .nf
+ \f[C]
+-Steps\ 1\ through\ 5\ may\ be\ repeated\ as\ neccessary.
++Steps\ 1\ through\ 5\ may\ be\ repeated\ as\ necessary.
+ \f[]
+ .fi
+ .RE
+--- a/host/utilities/bladeRF-cli/src/cmd/doc/cmd_help.h.in
++++ b/host/utilities/bladeRF-cli/src/cmd/doc/cmd_help.h.in
+@@ -422,10 +422,10 @@
+   "-   <pa|lna|aux> [on|off]\n" \
+   "\n" \
+   "    Enable or disable the power amplifier (PA), low-noise amplifier\n" \
+-  "    (lna) or auxillary LNA (aux). The current state if the specified\n" \
++  "    (lna) or auxiliary LNA (aux). The current state if the specified\n" \
+   "    device is printed if [on|off] is not specified.\n" \
+   "\n" \
+-  "    Note: The auxillary path on the XB-300 is not populated with\n" \
++  "    Note: The auxiliary path on the XB-300 is not populated with\n" \
+   "    components by default; the aux control will have no effect upon\n" \
+   "    the RX signal. This option is available for users to modify their\n" \
+   "    board with custom hardware.\n" \
+@@ -807,7 +807,7 @@
+   "6.  Re-configure the master and slaves to clear fire requests and\n" \
+   "    re-arm.\n" \
+   "\n" \
+-  "        Steps 1 through 5 may be repeated as neccessary.\n" \
++  "        Steps 1 through 5 may be repeated as necessary.\n" \
+   "\n" \
+   "7.  Disable triggering on all slaves\n" \
+   "\n" \
+--- a/host/utilities/bladeRF-cli/src/input/input.h
++++ b/host/utilities/bladeRF-cli/src/input/input.h
+@@ -52,7 +52,7 @@
+ char * input_expand_path(const char *path);
+ 
+ /**
+- * Notify input support that we caught CTRL-C. This is neccessary if
++ * Notify input support that we caught CTRL-C. This is necessary if
+  * the underlying support doesn't catch signals, such as the simple fgets-based
+  * implementation.
+  */
+--- a/host/common/include/dc_calibration.h
++++ b/host/common/include/dc_calibration.h
+@@ -107,7 +107,7 @@
+  *
+  * This requires use of both RX and TX modules in an internal loopback mode;
+  * neither should be in use when this function is called. It should not
+- * be neccessary to disconnect the RX and TX ports, but it is still recommended,
++ * be necessary to disconnect the RX and TX ports, but it is still recommended,
+  * just to err on the side of caution.
+  *
+  * @pre dc_calibration_lms6() should have been called for all modules prior to
+--- a/host/libraries/libbladeRF_bindings/matlab/CHANGELOG
++++ b/host/libraries/libbladeRF_bindings/matlab/CHANGELOG
+@@ -67,7 +67,7 @@
+ 
+ Changes:
+   * libbladeRF-proto.m now searches the current working directory and
+-    MATLABPATH for the neccessary THUNK library file.
++    MATLABPATH for the necessary THUNK library file.
+ 
+ 
+ v0.1.0 (2015-12-31)
+--- a/fpga_common/src/lms.c
++++ b/fpga_common/src/lms.c
+@@ -2911,7 +2911,7 @@
+                 return status;
+             }
+ 
+-            /* Power DC comparitors down, per FAQ 5.26 (rev 1.0r10) */
++            /* Power DC comparators down, per FAQ 5.26 (rev 1.0r10) */
+             status = lms_set(dev, 0x6e, (3 << 6));
+             if (status != 0) {
+                 return status;
+--- a/host/utilities/bladeRF-cli/src/cmd/lms_reg_info.c
++++ b/host/utilities/bladeRF-cli/src/cmd/lms_reg_info.c
+@@ -621,8 +621,8 @@
+             break;
+ 
+         case 0x6e:
+-            PRINT_BITS("PD[7] DC cal comparitor for VGA2B", 7, 7, value);
+-            PRINT_BITS("PD[6] DC cal comparitor for VGA2A", 6, 6, value);
++            PRINT_BITS("PD[7] DC cal comparator for VGA2B", 7, 7, value);
++            PRINT_BITS("PD[6] DC cal comparator for VGA2A", 6, 6, value);
+             PRINT_BITS("SPARE0[5:0]", 5, 0, value);
+             break;
+ 
+--- a/host/utilities/bladeRF-cli/src/cmd/rxtx.c
++++ b/host/utilities/bladeRF-cli/src/cmd/rxtx.c
+@@ -558,7 +558,7 @@
+                 status = CLI_RET_INVPARAM;
+             } else if (tmp % RXTX_SAMPLES_MIN != 0) {
+                 cli_err(s, argv0,
+-                        "The '%s' paramter must be a multiple of %u.\n", param,
++                        "The '%s' parameter must be a multiple of %u.\n", param,
+                         RXTX_SAMPLES_MIN);
+                 status = CLI_RET_INVPARAM;
+             } else {
+--- a/host/libraries/libbladeRF/src/board/bladerf1/bladerf1.c
++++ b/host/libraries/libbladeRF/src/board/bladerf1/bladerf1.c
+@@ -3005,7 +3005,7 @@
+      */
+     if (!getenv(env_override) && !is_valid_fw_size(length)) {
+         log_info("Detected potentially invalid firmware file.\n");
+-        log_info("Define BLADERF_SKIP_FW_SIZE_CHECK in your evironment "
++        log_info("Define BLADERF_SKIP_FW_SIZE_CHECK in your environment "
+                 "to skip this check.\n");
+         return BLADERF_ERR_INVAL;
+     }
+--- a/host/libraries/libbladeRF/src/board/bladerf2/bladerf2.c
++++ b/host/libraries/libbladeRF/src/board/bladerf2/bladerf2.c
+@@ -1191,7 +1191,7 @@
+     CHECK_BOARD_STATE(STATE_INITIALIZED);
+ 
+     if (dev->feature == BLADERF_FEATURE_OVERSAMPLE) {
+-        log_warning("bandwidth assignements with oversample feature enabled yields unkown results\n");
++        log_warning("bandwidth assignments with oversample feature enabled yields unknown results\n");
+     }
+ 
+     struct bladerf2_board_data *board_data = dev->board_data;

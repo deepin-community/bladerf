@@ -1,4 +1,78 @@
 #!/usr/bin/make -f
+# -*- makefile -*-
+# vim:noet
+include /usr/share/dpkg/pkg-info.mk
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+py3default = $(subst .,,$(shell py3versions -dv))
+
+# Test to see if we're a snapshot build by looking for the word
+# "SNAPSHOT" in our version.  If so, infer our current version and inject
+# it into the build process.
+DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
+
+ifneq (,$(findstring SNAPSHOT,$(DEB_VERSION)))
+	# Format is like: 0.9.0+1SNAPSHOT20131027041813-gitedc468d~saucy
+	DVS_SPLIT := $(subst ~, ,$(subst -git, ,$(DEB_VERSION)))
+	# Format is like: 0.9.0+1SNAPSHOT20131027041813 edc468d saucy
+	DEB_VERSION_GITHASH := $(word 2,$(DVS_SPLIT))
+	DEB_VERSION_SERIES := $(word 3,$(DVS_SPLIT))
+	# Produce a version suffix like: git-edc468d-ppasaucy
+	VERSION_INFO_OVERRIDE := git-$(DEB_VERSION_GITHASH)-ppa$(DEB_VERSION_SERIES)
+else
+	VERSION_INFO_OVERRIDE := $(DEB_VERSION)
+endif
+
+# For tagged PPA release builds, we have a slightly different format...
+ifneq (,$(findstring 1ppa,$(DEB_VERSION)))
+	# Format is like: 2014.09-rc1-1ppa1~saucy
+	DVS_SPLIT := $(subst ~, ,$(subst -1ppa, ,$(DEB_VERSION)))
+	# Format is like: 2014.09-rc1 1 saucy
+	DEB_VERSION_TAG := $(word 1,$(DVS_SPLIT))
+	DEB_VERSION_BUILD := $(word 2,$(DVS_SPLIT))
+	DEB_VERSION_SERIES := $(word 3,$(DVS_SPLIT))
+	# Produce a version suffix like: 2014.09-rc1-1-ppasaucy
+	VERSION_INFO_OVERRIDE := $(DEB_VERSION_TAG)-$(DEB_VERSION_BUILD)-ppa$(DEB_VERSION_SERIES)
+endif
+
+override_dh_acc:
+	- dh_acc $@
+	- cat logs/libbladerf-dev/*/log.txt
+
+override_dh_auto_configure:
+	cp -p -r drivers/* thirdparty/analogdevicesinc/no-OS/
+	dh_auto_configure -- 	-DVERSION_INFO_OVERRIDE:STRING=$(VERSION_INFO_OVERRIDE) \
+							-DCMAKE_BUILD_TYPE=RelWithDebInfo \
+							-DCMAKE_INSTALL_DOCDIR="share/doc/libbladerf-doc" \
+							-DENABLE_HOST_BUILD=ON \
+							-DTREAT_WARNINGS_AS_ERRORS=OFF \
+							-DENABLE_LIBTECLA=ON \
+							-DENABLE_LIBEDIT=ON \
+							-DENABLE_FX3_BUILD=OFF \
+							-DBUILD_DOCUMENTATION=ON \
+							-DUDEV_RULES_PATH=/usr/lib/udev/rules.d
+
+override_dh_auto_build:
+	dh_auto_build
+	dh_auto_build --buildsystem=pybuild --sourcedir=host/libraries/libbladeRF_bindings/python
+
+override_dh_auto_install:
+	dh_auto_install
+	# Python3 bindings
+	dh_auto_install --buildsystem=pybuild --sourcedir=host/libraries/libbladeRF_bindings/python
+	# Use locally installed Mathjax.js
+	(cd debian/tmp/usr/share/doc/libbladerf-doc/html && ln -s /usr/share/javascript/mathjax/MathJax.js MathJax.js)
+	(cd debian/tmp/usr/share/doc/libbladerf-doc/html && sed --in-place 's_http://cdn.mathjax.org/mathjax/latest/MathJax.js_MathJax.js_' *.html)
+	# library soversion named udev rules
+	#mv debian/tmp/lib/udev/rules.d/88-nuand.rules debian/tmp/lib/udev/rules.d/88-libbladerf2.rules
+	# per lintian
+	rm -f host/examples/bladeRF-cli/sync_trx/.gitignore
+	rm -f host/examples/python/txrx/.gitignore
+
+override_dh_auto_clean:
+	dh_auto_clean
+	rm -rf thirdparty/analogdevicesinc/no-OS/*
 
 %:
-	dh $@
+	dh $@ --with python3

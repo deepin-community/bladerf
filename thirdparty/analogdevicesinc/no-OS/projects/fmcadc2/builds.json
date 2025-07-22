@@ -1,0 +1,16 @@
+{
+      "xilinx": {
+            "demo": {
+                  "flags": "",
+                  "hardware": [
+                        "fmcadc2_zc706"
+                  ]
+            },
+            "iio": {
+                  "flags": "IIOD=y",
+                  "hardware": [
+                        "fmcadc2_zc706"
+                  ]
+            }
+      }
+}

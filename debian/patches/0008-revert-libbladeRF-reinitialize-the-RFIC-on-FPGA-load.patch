@@ -1,0 +1,31 @@
+From b40cd829be0b2bc2d17e77ca92c08045667912d8 Mon Sep 17 00:00:00 2001
+From: Ryan Thompson <ryanrthompson10@gmail.com>
+Date: Wed, 1 May 2024 16:02:28 -0500
+Subject: [PATCH 8/9] revert "libbladeRF: reinitialize the RFIC on FPGA load"
+
+This reverts commit 0fcb4cfe037511ce5da8703da824158ef2f79367.
+---
+ host/libraries/libbladeRF/src/board/bladerf2/bladerf2.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/host/libraries/libbladeRF/src/board/bladerf2/bladerf2.c b/host/libraries/libbladeRF/src/board/bladerf2/bladerf2.c
+index a1d67217..93e7ce82 100644
+--- a/host/libraries/libbladeRF/src/board/bladerf2/bladerf2.c
++++ b/host/libraries/libbladeRF/src/board/bladerf2/bladerf2.c
+@@ -2240,11 +2240,9 @@ static int bladerf2_load_fpga(struct bladerf *dev,
+         RETURN_INVAL("fpga file", "incorrect file size");
+     }
+ 
+-    if (dev->backend->is_fpga_configured(dev)) {
+-        CHECK_STATUS(board_data->rfic->standby(dev));
+-    }
+-
+     CHECK_STATUS(dev->backend->load_fpga(dev, buf, length));
++
++    /* Update device state */
+     board_data->state = STATE_FPGA_LOADED;
+ 
+     CHECK_STATUS(_bladerf2_initialize(dev));
+-- 
+2.39.2
+

@@ -1,0 +1,7 @@
+version=4
+opts="filenamemangle=s%(?:.*?)?v?(\d[\d.]*)\.tar\.gz%bladerf_$1.orig.tar.gz%,uversionmangle=s%(.*)%0.$1%" \
+ https://github.com/Nuand/BladeRF/tags \
+ (?:.*?/)?v?(\d[\d.]*)\.tar\.gz debian uupdate
+opts="component=drivers mode=git, pgpmode=none" \
+ https://github.com/analogdevicesinc/no-OS/ \
+ HEAD debian uupdate
