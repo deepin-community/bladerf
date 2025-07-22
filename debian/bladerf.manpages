@@ -1,0 +1,3 @@
+debian/bladeRF-fsk.1
+debian/bladeRF-install-firmware.1
+debian/tmp/usr/share/man/man1/*.1

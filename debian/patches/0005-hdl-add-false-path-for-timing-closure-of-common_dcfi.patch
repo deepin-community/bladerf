@@ -1,0 +1,28 @@
+From 473f5f08659deb1cb19853dad0496bdc40e96065 Mon Sep 17 00:00:00 2001
+From: Robert Ghilduta <robert.ghilduta@nuand.com>
+Date: Sat, 13 Apr 2024 20:00:57 -0700
+Subject: [PATCH 5/9] hdl: add false path for timing closure of common_dcfifo
+
+Note: common_dcfifo impacts all bladeRF FIFOs, including sample and meta FIFOs.
+---
+ hdl/fpga/ip/altera/common_dcfifo/common_dcfifo.vhd | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/hdl/fpga/ip/altera/common_dcfifo/common_dcfifo.vhd b/hdl/fpga/ip/altera/common_dcfifo/common_dcfifo.vhd
+index fbbcd8f6..dfc560cf 100644
+--- a/hdl/fpga/ip/altera/common_dcfifo/common_dcfifo.vhd
++++ b/hdl/fpga/ip/altera/common_dcfifo/common_dcfifo.vhd
+@@ -134,6 +134,10 @@ end entity;
+ 
+ architecture arch of common_dcfifo is
+ 
++    attribute ALTERA_ATTRIBUTE  : string;
++
++    attribute ALTERA_ATTRIBUTE of arch  : architecture is "-name SDC_STATEMENT ""set_false_path -to [get_registers {*fifo_gen:U_dcfifo_mixed_widths|dcfifo_*:auto_generated|dffpipe_*:wraclr|dffe*a[0]}] """;
++
+     function valid_width_ratio( width : natural; width_r : natural ) return boolean is
+         variable r  : natural := 0;
+         variable rv : boolean := false;
+-- 
+2.39.2
+

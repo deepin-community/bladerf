@@ -1,0 +1,57 @@
+.TH BLADERF-TOOL "1" "August 2019" "Nuand.com" "User Commands"
+.SH NAME
+bladerf-tool: \- a Python command-line tool for bladeRF devices
+.SH DESCRIPTION
+The bladerf-tool utility is used to flash firmware files, load FPGA bitstreams,
+and perform other tasks on the nuand bladeRF software-defined radio system.
+.P
+For more information on obtaining or building firmware files and
+FPGA bitstreams, please visit http://nuand.com/.
+.SH USAGE
+bladerf\-tool [\-h] [\-\-device DEVICE]
+.TP
+info, probe, flash_fw, recover_fw, load_fpga,
+flash_fpga, erase_fpga, rx, tx, version
+.SS "optional arguments:"
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+show this help message and exit
+.TP
+\fB\-\-device\fR DEVICE, \fB\-d\fR DEVICE
+device identifier
+.SS "subcommands:"
+.IP
+info, probe, flash_fw, recover_fw, load_fpga,
+flash_fpga, erase_fpga, rx, tx,version
+.TP
+info
+get device info
+.TP
+probe
+probe for devices
+.TP
+flash_fw
+flash firmware
+.TP
+recover_fw
+recover firmware
+.TP
+load_fpga
+load fpga
+.TP
+flash_fpga
+flash fpga
+.TP
+erase_fpga
+erase fpga
+.TP
+rx
+receive samples
+.TP
+tx
+transmit samples
+.TP
+version
+print version info
+.SH "SEE ALSO"
+bladeRF-cli(1), bladeRF-fsk(1), bladeRF-install-firmware(1)

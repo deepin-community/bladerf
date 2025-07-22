@@ -1,0 +1,32 @@
+From 4b62a41797f5b069192c384844cd12f7f6f778b8 Mon Sep 17 00:00:00 2001
+From: Robert Ghilduta <robert.ghilduta@nuand.com>
+Date: Sun, 14 Apr 2024 23:14:39 -0700
+Subject: [PATCH 6/9] hdl: bladeRF-micro redefine JTAG SDC
+
+---
+ hdl/fpga/platforms/bladerf-micro/constraints/bladerf.sdc | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/hdl/fpga/platforms/bladerf-micro/constraints/bladerf.sdc b/hdl/fpga/platforms/bladerf-micro/constraints/bladerf.sdc
+index 85b16c3e..d01c8a29 100644
+--- a/hdl/fpga/platforms/bladerf-micro/constraints/bladerf.sdc
++++ b/hdl/fpga/platforms/bladerf-micro/constraints/bladerf.sdc
+@@ -71,10 +71,11 @@ set_false_path -from exp_present   -to *
+ set_false_path -from pwr_status    -to *
+ 
+ # JTAG settings
+-set_clock_groups -exclusive -group [get_clocks altera_reserved_tck]
+-set_input_delay  -clock [get_clocks altera_reserved_tck] 2.0 [get_ports altera_reserved_tdi]
+-set_input_delay  -clock [get_clocks altera_reserved_tck] 2.0 [get_ports altera_reserved_tms]
+-set_output_delay -clock [get_clocks altera_reserved_tck] 2.0 [get_ports altera_reserved_tdo]
++create_clock -name {altera_reserved_tck} -period 10 [get_ports {altera_reserved_tck}]
++set_clock_groups -asynchronous -group {altera_reserved_tck}
++set_false_path -from [get_ports {altera_reserved_tms}]
++set_false_path -from [get_ports {altera_reserved_tdi}]
++set_false_path -to [get_ports {altera_reserved_tdo}]
+ 
+ # Exceptions
+ 
+-- 
+2.39.2
+

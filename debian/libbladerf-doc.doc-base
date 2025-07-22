@@ -1,0 +1,8 @@
+Document: libbladerf-doc
+Title: Nuand bladeRF library
+Author: Nuand
+Section: Programming
+
+Format: HTML
+Index: /usr/share/doc/libbladerf-doc/html/index.html
+Files: /usr/share/doc/libbladerf-doc/html/*

@@ -1,0 +1,223 @@
+#!/bin/sh
+#
+# Title      :	bladeRF-install-firmware
+# Purpose    :  fetch non-free BladeRF firmware
+# Author     :	A. Maitland Bottoms <bottoms@debian.org>
+# Date       :	2013-10-10
+# Update     :	2021-11-20
+#
+# Copyright 2013-2021 A. Maitland Bottoms <bottoms@debian.org>
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+
+set -e
+
+show_usage()
+{
+    echo "Usage: $0 [-i imagedir] [imagetarball]" >&2
+    exit 1
+}
+
+FX3UPSTREAM='https://www.nuand.com/fx3/bladeRF_fw_v2.4.0.img'
+FX3CHECKSUM='337f570f2e3fdb26abde0f0765196d92'
+FX3SHA256SUM='670d1ca7aa1c6007eb09900351c3aa997e4be316dbc0a2fc1532a908d02cc0a9'
+FX3IMGFILE='/usr/share/Nuand/bladeRF/bladeRF_fw.img'
+
+FPGA115UPSTREAM='https://www.nuand.com/fpga/v0.14.0/hostedx115.rbf'
+FPGA115CHECKSUM='94ee5c7f68abe5c3392202246789fedd'
+FPGA115SHA256SUM='603b144ac81ff4ebc254771dd13a379a8d749a5f595232f61d188d2f556e7c02'
+FPGA115RBFFILE='/usr/share/Nuand/bladeRF/hostedx115.rbf'
+
+FPGA40UPSTREAM='https://www.nuand.com/fpga/v0.14.0/hostedx40.rbf'
+FPGA40CHECKSUM='25f402b3734c9aa0d37db9531f93335c'
+FPGA40SHA256SUM='e15fd9b36912cf07fb732e62069b9e519051cb701a811358779000406a2ea93b'
+FPGA40RBFFILE='/usr/share/Nuand/bladeRF/hostedx40.rbf'
+
+FPGAA4UPSTREAM='https://www.nuand.com/fpga/v0.14.0/hostedxA4.rbf'
+FPGAA4CHECKSUM='c24af70cf56b13123295125a22d5e921'
+FPGAA4SHA256SUM='8d45843962c3e930eac3d5cb594ba72b98164c9bbccc218f82975ba05d6f0f5c'
+FPGAA4RBFFILE='/usr/share/Nuand/bladeRF/hostedxA4.rbf'
+
+FPGAA5UPSTREAM='https://www.nuand.com/fpga/v0.14.0/hostedxA5.rbf'
+FPGAA5CHECKSUM='ae6391cc3fd467bbb07868450612ce17'
+FPGAA5SHA256SUM='fae3b8bfee070afdb170014c39b3f56e0935aec8beea62e2d0c9fae7c40ddff5'
+FPGAA5RBFFILE='/usr/share/Nuand/bladeRF/hostedxA5.rbf'
+
+FPGAA9UPSTREAM='https://www.nuand.com/fpga/v0.14.0/hostedxA9.rbf'
+FPGAA9CHECKSUM='7dfe8c32f260d43a14b9583375a1a6eb'
+FPGASHA256SUM='622c08b49eec30e420c5ef86521a81c874a27d873df38d3ddc81afc71a461abb'
+FPGAA9RBFFILE='/usr/share/Nuand/bladeRF/hostedxA9.rbf'
+
+WLANXA9UPSTREAM='https://www.nuand.com/fpga/v0.14.0/wlanxA9.rbf'
+WLANXA9CHECKSUM='e8647f59f6923421eed9c49e0e08c2f5'
+WLANXA9SHA256SUM='2b2855f47c70c9d912f5fc72eda482d92e2674a56eb115b057aeeafb8c58d9d6'
+WLANXA9RBFFILE='/usr/share/Nuand/bladeRF/wlanxA9.rbf'
+
+ADSBA4UPSTREAM='https://www.nuand.com/fpga/adsbxA4.rbf'
+ADSBA4CHECKSUM='2fe523c4c3f62100a19eab1446676f39'
+ADSBA4SHA256SUM='e3ef41920c148f34990a16a6d9614a4f1632391ee5ed05f16149dd82c5367d14'
+ADSBA4RBFFILE='/usr/share/Nuand/bladeRF/adsbxA4.rbf'
+
+ADSBA9UPSTREAM='https://www.nuand.com/fpga/adsbxA9.rbf'
+ADSBA9CHECKSUM='4526ef899fef566619625982fdc5cfb4'
+ADSBA9SHA256SUM='b1e1be9228f2b6629f49dd357b5c5e65b5c3c581e6769e9abd341639617ca212'
+ADSBA9RBFFILE='/usr/share/Nuand/bladeRF/adsbxA9.rbf'
+
+ADSB40UPSTREAM='https://www.nuand.com/fpga/adsbx40.rbf'
+ADSB40CHECKSUM='5c6045066ac2e62c8a2c3e770c6c355c'
+ADSB40SHA256SUM='2801df76b13b243d3b4a211f39841326fbbdf8e4656c61761b814ef5386a6a08'
+ADSB40RBFFILE='/usr/share/Nuand/bladeRF/adsbx40.rbf'
+
+ADSB115UPSTREAM='https://www.nuand.com/fpga/adsbx115.rbf'
+ADSB115CHECKSUM='178f1d952be3a05f2f0a4a0e9429746a'
+ADSB115SHA256SUM='e5ff37596f6d46ca9124001bde73237a85c435024963c911658b922e6e960142'
+ADSB115RBFFILE='/usr/share/Nuand/bladeRF/adsbx115.rbf'
+
+# Default values:
+# The imagedir is the path bladerf-host and libbladerf packages
+# use to find firmware.
+imagedir="/usr/share/Nuand/bladeRF"
+# The imagetarball is the source of firmware built with matching
+# source code.
+fpgaimageurl=""
+usbimageurl=""
+while [ "$1" != "" ]; do
+    case $1 in
+        -h | --help )           show_usage
+                                exit 0
+                                ;;
+        -i | --imagedir )       shift
+	                        imagedir=$1
+                                ;;
+        -f | --fpgafile )       shift
+                                fpgaimageurl=$1
+                                ;;
+        -u | --usbfile )        shift
+                                usbimageurl=$1
+                                ;;
+        * )                     fpgaimageurl=$1
+                                ;;
+    esac
+    shift
+done
+
+if mkdir -p $imagedir ; then
+    if [ -w $imagedir ] ;then
+	echo Using imagedir: $imagedir
+    else
+	echo You need to run this script as a user who can write to $imagedir
+	exit 1
+    fi
+else
+    echo You need to run this script as a user who can create $imagedir
+    exit 1
+fi
+
+tdir=`mktemp -d`
+fetchlist=""
+echo "Using tempdir:" $tdir
+if [ "x$fpgaimageurl" = "x" ] && [ "x$usbimageurl" = "x" ] ; then
+    fetchlist="$FX3UPSTREAM $FPGA40UPSTREAM $FPGA115UPSTREAM $FPGAA4UPSTREAM $FPGAA5UPSTREAM $FPGAA9UPSTREAM \
+    			    $ADSB40UPSTREAM $ADSB115UPSTREAM $ADSBA4UPSTREAM $ADSBA9UPSTREAM"
+else
+    if [ "x$fpgaimageurl" != "x" ] ; then
+	fetchlist="$fetchlist $fpgaimageurl"
+    fi
+    if [ "x$usbimageurl" != "x" ] ; then
+	fetchlist="$fetchlist $usbimageurl"
+    fi
+fi
+
+for item in $fetchlist; do
+echo "Using: " $item
+
+# if URL, fetch it first
+    if echo $item | grep -q :// ; then
+	echo Fetching $item ;
+	if [ -x /usr/bin/wget ] ; then
+	    /usr/bin/wget --user-agent="Debian BladeRF image installer" -O $tdir/`basename $item` $item
+	else
+	    curl --user-agent "Debian BladeRF image installer" -o $tdir/`basename $item` $item
+	fi
+    else
+	if [ -f $item ] ; then
+	    echo Copying $item
+	    cp -p $item $tdir/
+	else
+	    echo "Cannot find" $item;
+	    show_usage
+	    exit 1
+	fi
+    fi;
+    if [ `basename $item` = "bladeRF_fw_v2.4.0.img" ] ; then
+	md5sum --check - <<- EOF
+$FX3CHECKSUM  $tdir/`basename $item`
+EOF
+	sha256sum --check - <<- EOF
+$FX3SHA256SUM  $tdir/`basename $item`
+EOF
+	cp -p $tdir/`basename $item` $imagedir/bladeRF_fw.img ;
+    fi
+    if [ `basename $item` = "hostedx40.rbf" ] ; then
+	md5sum --check - <<- EOF
+$FPGA40CHECKSUM  $tdir/`basename $item`
+EOF
+	sha256sum --check - <<- EOF
+$FPGA40SHA256SUM  $tdir/`basename $item`
+EOF
+    fi
+    if [ `basename $item` = "hostedx115.rbf" ] ; then
+	md5sum --check - <<- EOF
+$FPGA115CHECKSUM  $tdir/`basename $item`
+EOF
+	sha256sum --check - <<- EOF
+$FPGA115SHA256SUM  $tdir/`basename $item`
+EOF
+    fi
+    if [ `basename $item` = "hostedxa4.rbf" ] ; then
+	md5sum --check - <<- EOF
+$FPGAA4CHECKSUM  $tdir/`basename $item`
+EOF
+	sha256sum --check - <<- EOF
+$FPGAA4SHA256SUM  $tdir/`basename $item`
+EOF
+    fi
+    if [ `basename $item` = "hostedxa5.rbf" ] ; then
+	md5sum --check - <<- EOF
+$FPGAA5CHECKSUM  $tdir/`basename $item`
+EOF
+	sha256sum --check - <<- EOF
+$FPGAA5SHA256SUM  $tdir/`basename $item`
+EOF
+    fi
+    if [ `basename $item` = "hostedxa9.rbf" ] ; then
+	md5sum --check - <<- EOF
+$FPGAA9CHECKSUM  $tdir/`basename $item`
+EOF
+	sha256sum --check - <<- EOF
+$FPGAA9SHA256SUM  $tdir/`basename $item`
+EOF
+    fi
+    cp -p $tdir/`basename $item` $imagedir/`basename $item`
+done
+
+for file in `ls $imagedir`; do md5sum $imagedir/$file ; done
+rm -i -rf $tdir
+
+exit 0

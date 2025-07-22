@@ -1,0 +1,26 @@
+Author: "A. Maitland Bottoms" <bottoms@debian.org>
+Description: update bladerf udev rules
+ use TAG+="uaccess"
+
+--- a/host/misc/udev/88-nuand-bladerf1.rules.in
++++ b/host/misc/udev/88-nuand-bladerf1.rules.in
+@@ -1,5 +1,5 @@
+ # Nuand bladeRF
+-ATTR{idVendor}=="2cf0", ATTR{idProduct}=="5246", MODE="660", GROUP="@BLADERF_GROUP@"
++SUBSYSTEM=="usb", ATTR{idVendor}=="2cf0", ATTR{idProduct}=="5246", ENV{ID_SOFTWARE_RADIO}="1", TAG+="uaccess"
+ 
+ # Nuand bladeRF, legacy VID/PID
+-ATTR{idVendor}=="1d50", ATTR{idProduct}=="6066", MODE="660", GROUP="@BLADERF_GROUP@"
++SUBSYSTEM=="usb", ATTR{idVendor}=="1d50", ATTR{idProduct}=="6066", ENV{ID_SOFTWARE_RADIO}="1", TAG+="uaccess"
+--- a/host/misc/udev/88-nuand-bladerf2.rules.in
++++ b/host/misc/udev/88-nuand-bladerf2.rules.in
+@@ -1,2 +1,2 @@
+ # Nuand bladeRF 2.0 micro
+-ATTR{idVendor}=="2cf0", ATTR{idProduct}=="5250", MODE="660", GROUP="@BLADERF_GROUP@"
++SUBSYSTEM=="usb", ATTR{idVendor}=="2cf0", ATTR{idProduct}=="5250", ENV{ID_SOFTWARE_RADIO}="1", TAG+="uaccess"
+--- a/host/misc/udev/88-nuand-bootloader.rules.in
++++ b/host/misc/udev/88-nuand-bootloader.rules.in
+@@ -1,2 +1,2 @@
+ # Cypress FX3 Bootloader, used by bladeRF in recovery mode
+-ATTR{idVendor}=="04b4", ATTR{idProduct}=="00f3", MODE="660", GROUP="@BLADERF_GROUP@"
++SUBSYSTEM=="usb", ATTR{idVendor}=="04b4", ATTR{idProduct}=="00f3", ENV{ID_SOFTWARE_RADIO}="1", TAG+="uaccess"

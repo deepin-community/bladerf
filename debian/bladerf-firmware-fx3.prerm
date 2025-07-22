@@ -1,0 +1,11 @@
+#!/bin/sh
+set -e
+
+IMGFILE=/usr/share/Nuand/bladeRF/bladeRF_fw.img
+
+if [ "$1" = "remove" -o "$1" = "purge" ]; then
+	echo "Deleting downloaded firmware: $IMGFILE"
+	rm -f $IMGFILE
+fi
+
+#DEBHELPER#

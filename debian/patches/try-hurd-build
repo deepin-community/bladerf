@@ -1,0 +1,27 @@
+From: A. Maitland Bottoms <bottoms@debian.org>
+Subject: try hurd build
+
+Debian builds on GNU hurd-i386.
+
+--- a/host/CMakeLists.txt
++++ b/host/CMakeLists.txt
+@@ -182,6 +182,8 @@
+     )
+ 
+     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
++elseif(${CMAKE_SYSTEM_NAME} MATCHES "GNU")
++    message(WARNING "Unsupported host operating system: ${CMAKE_SYSTEM_NAME}")
+ else()
+     message(FATAL_ERROR "Unsupported host operating system: ${CMAKE_SYSTEM_NAME}")
+ endif()
+--- a/host/cmake/modules/FindLibUSB.cmake
++++ b/host/cmake/modules/FindLibUSB.cmake
+@@ -60,7 +60,7 @@
+ 
+ find_package(PkgConfig)
+ if(PKG_CONFIG_FOUND)
+-    pkg_check_modules(PKGCONFIG_LIBUSB libusb-1.0 QUIET)
++    pkg_check_modules(PKGCONFIG_LIBUSB QUIET libusb-1.0 libusb)
+ endif(PKG_CONFIG_FOUND)
+ 
+ if(PKGCONFIG_LIBUSB_FOUND AND NOT LIBUSB_FOUND)

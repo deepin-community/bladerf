@@ -1,0 +1,31 @@
+From 2fbae2c38b377cfbee98c281789cd43d1f1b55e4 Mon Sep 17 00:00:00 2001
+From: Robert Ghilduta <robert.ghilduta@nuand.com>
+Date: Sun, 14 Apr 2024 23:25:59 -0700
+Subject: [PATCH 7/9] libbladeRF_test: bump dependency versions
+
+---
+ host/libraries/libbladeRF_test/requirements.txt | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/host/libraries/libbladeRF_test/requirements.txt b/host/libraries/libbladeRF_test/requirements.txt
+index b11c20a9..e777159e 100644
+--- a/host/libraries/libbladeRF_test/requirements.txt
++++ b/host/libraries/libbladeRF_test/requirements.txt
+@@ -1,12 +1,12 @@
+ contourpy==1.1.0
+ cycler==0.11.0
+-fonttools==4.42.1
++fonttools==4.43.0
+ kiwisolver==1.4.5
+ matplotlib==3.7.2
+ numpy==1.25.2
+ packaging==23.1
+ pandas==2.0.3
+-Pillow==10.0.1
++Pillow==10.3.0
+ pyparsing==3.0.9
+ python-dateutil==2.8.2
+ pytz==2023.3
+-- 
+2.39.2
+

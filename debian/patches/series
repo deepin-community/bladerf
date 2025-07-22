@@ -1,0 +1,13 @@
+0001-test-added-FPGA-load-test.patch
+0002-libbladeRF-reinitialize-the-RFIC-on-FPGA-load.patch
+0003-doc-updated-default-tuning-mode-to-host.patch
+0004-libbladeRF-fix-up-sync-TX-initialization-bug.patch
+0005-hdl-add-false-path-for-timing-closure-of-common_dcfi.patch
+0006-hdl-bladeRF-micro-redefine-JTAG-SDC.patch
+0007-libbladeRF_test-bump-dependency-versions.patch
+0008-revert-libbladeRF-reinitialize-the-RFIC-on-FPGA-load.patch
+# 0009-debian-update-change.patch
+spelling
+debian-kfreebsd
+try-hurd-build
+update-bladerf-udev-rules

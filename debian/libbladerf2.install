@@ -1,0 +1,3 @@
+debian/libbladerf2.metainfo.xml usr/share/metainfo
+usr/lib/*/lib*.so.*
+usr/lib/udev/rules.d/*
